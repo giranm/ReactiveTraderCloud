@@ -1,40 +1,125 @@
 version: '3'
 services:
-  eventstore:
-    container_name: eventstore_base
-    image: ${DOCKER_USER}/eventstore:${BUILD_VERSION}
-    build:
-      dockerfile: Dockerfile
-      context: ./services/eventstore
+
   broker:
+    container_name: broker
     image: ${DOCKER_USER}/broker:${BUILD_VERSION}
     build:
       dockerfile: Dockerfile
       context: ./services/broker
     ports:
       - '8000:8000'
-  servers:
+
+  eventstore:
+    container_name: eventstore
+    image: ${DOCKER_USER}/eventstore:${BUILD_VERSION}
+    build:
+      dockerfile: Dockerfile
+      context: ./services/eventstore
+
+  eventstore_seed:
+    container_name: eventstore_seed
     image: ${DOCKER_USER}/servers:${BUILD_VERSION}
     build:
       dockerfile: Dockerfile
       context: ./server/dotNet
-    depends_on:
-      - broker
-      - eventstore
-      - referencedataread
-      - pricing
-      - blotter
-      - tradeexecution
-    command: dotnet ./Adaptive.ReactiveTrader.Server.Launcher.dll config.prod.json --populate-eventstore
-  nginx:
-    image: ${DOCKER_USER}/nginx:${BUILD_VERSION}
-    restart: always
+    # depends_on:
+    #   - broker
+    #   - eventstore
+    command: >
+      /bin/bash -c "
+        sleep 5;
+        dotnet ./Adaptive.ReactiveTrader.Server.Launcher.dll config.prod.json --populate-eventstore;
+        tail -f /dev/null;
+      "
+
+  analytics:
+    container_name: analytics
+    image: ${DOCKER_USER}/analytics:${BUILD_VERSION}
     build:
       dockerfile: Dockerfile
-      context: ./services/nginx
-    ports:
-      - '80:80'
+      context: ./server/dotNet
+    command: 'dotnet ./Adaptive.ReactiveTrader.Server.Analytics.dll config.prod.json'
+    # depends_on:
+    #   - broker
+    #   - eventstore
+
+  pricing:
+    container_name: pricing
+    image: ${DOCKER_USER}/pricing:${BUILD_VERSION}
+    build:
+      dockerfile: Dockerfile
+      context: ./server/dotNet
+    command: 'dotnet ./Adaptive.ReactiveTrader.Server.Pricing.dll config.prod.json'
+    # depends_on:
+    #   - broker
+    #   - eventstore
+    #   - analytics
+
+  referencedataread:
+    container_name: referencedataread
+    image: ${DOCKER_USER}/referencedataread:${BUILD_VERSION}
+    build:
+      dockerfile: Dockerfile
+      context: ./server/dotNet
+    command: 'dotnet ./Adaptive.ReactiveTrader.Server.ReferenceDataRead.dll config.prod.json'
+    # depends_on:
+    #   - broker
+    #   - eventstore
+    #   - pricing
+
+  tradeexecution:
+    container_name: tradeexecution
+    image: ${DOCKER_USER}/tradeexecution:${BUILD_VERSION}
+    build:
+      dockerfile: Dockerfile
+      context: ./server/dotNet
+    command: 'dotnet ./Adaptive.ReactiveTrader.Server.TradeExecution.dll config.prod.json'
+    # depends_on:
+    #   - broker
+    #   - eventstore
+    #   - referencedataread
+
+  blotter:
+    container_name: blotter
+    image: ${DOCKER_USER}/blotter:${BUILD_VERSION}
+    build:
+      dockerfile: Dockerfile
+      context: ./server/dotNet
+    command: 'dotnet ./Adaptive.ReactiveTrader.Server.Blotter.dll config.prod.json'
+    # depends_on:
+    #   - broker
+    #   - eventstore
+    #   - tradeexecution
+
+  pricehistory:
+    container_name: pricehistory
+    image: ${DOCKER_USER}/pricehistory:${BUILD_VERSION}
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./server/node/priceHistory
+    # depends_on:
+    #   - broker
+    #   - pricing
+    environment:
+      - BROKER_HOST=broker
+      - BROKER_PORT=8000
+
+  nlp:
+    container_name: nlp
+    hostname: nlp
+    image: ${DOCKER_USER}/nlp:${BUILD_VERSION}
+    build:
+      dockerfile: Nlp.Dockerfile
+      context: ./server/node
+    # depends_on:
+    #   - broker
+    environment:
+      - BROKER_HOST=broker
+      - BROKER_PORT=8000
+
   client:
+    container_name: client
     image: ${DOCKER_USER}/client:${BUILD_VERSION}
     build:
       dockerfile: Dockerfile
@@ -42,92 +127,36 @@ services:
       args:
         - CI=true
         - REACT_APP_BUILD_VERSION=${BUILD_VERSION}
-    depends_on:
-      - servers
-  e2ebase:
-    image: ${DOCKER_USER}/e2ebase:${BUILD_VERSION}
+    # depends_on:
+    #   - blotter
+
+  nginx:
+    container_name: nginx
+    image: ${DOCKER_USER}/nginx:${BUILD_VERSION}
+    restart: always
     build:
       dockerfile: Dockerfile
-      context: ./e2e
-  analytics:
-    image: ${DOCKER_USER}/analytics:${BUILD_VERSION}
-    build:
-      dockerfile: Dockerfile
-      context: ./server/dotNet
-    command: 'dotnet ./Adaptive.ReactiveTrader.Server.Analytics.dll config.prod.json'
-    depends_on:
-      - broker
-      - eventstore
-  pricing:
-    image: ${DOCKER_USER}/pricing:${BUILD_VERSION}
-    build:
-      dockerfile: Dockerfile
-      context: ./server/dotNet
-    command: 'dotnet ./Adaptive.ReactiveTrader.Server.Pricing.dll config.prod.json'
-    depends_on:
-      - broker
-      - eventstore
-      - analytics
-  referencedataread:
-    image: ${DOCKER_USER}/referencedataread:${BUILD_VERSION}
-    build:
-      dockerfile: Dockerfile
-      context: ./server/dotNet
-    command: 'dotnet ./Adaptive.ReactiveTrader.Server.ReferenceDataRead.dll config.prod.json'
-    depends_on:
-      - broker
-      - eventstore
-      - pricing
-  tradeexecution:
-    image: ${DOCKER_USER}/tradeexecution:${BUILD_VERSION}
-    build:
-      dockerfile: Dockerfile
-      context: ./server/dotNet
-    command: 'dotnet ./Adaptive.ReactiveTrader.Server.TradeExecution.dll config.prod.json'
-    depends_on:
-      - broker
-      - eventstore
-      - referencedataread
-  blotter:
-    image: ${DOCKER_USER}/blotter:${BUILD_VERSION}
-    build:
-      dockerfile: Dockerfile
-      context: ./server/dotNet
-    command: 'dotnet ./Adaptive.ReactiveTrader.Server.Blotter.dll config.prod.json'
-    depends_on:
-      - broker
-      - eventstore
-      - tradeexecution
-  pricehistory:
-    image: ${DOCKER_USER}/pricehistory:${BUILD_VERSION}
-    build:
-      dockerfile: Dockerfile.dev
-      context: ./server/node/priceHistory
-    depends_on:
-      - broker
-      - pricing
-    environment:
-     - BROKER_HOST=broker
-     - BROKER_PORT=8000
-  nlp:
-    image: ${DOCKER_USER}/nlp:${BUILD_VERSION}
-    hostname: nlp
-    build:
-      dockerfile: Nlp.Dockerfile
-      context: ./server/node
-    depends_on:
-      - broker
-    environment:
-      - BROKER_HOST=broker
-      - BROKER_PORT=8000
-  openfinconfig:
-    image: ${DOCKER_USER}/openfinconfig:${BUILD_VERSION}
-    hostname: openfinconfig
-    build:
-      dockerfile: OpenfinConfig.Dockerfile
-      context: ./server/node
-  bot:
-    hostname: bot
-    image: ${DOCKER_USER}/bot:${BUILD_VERSION}
-    build:
-      context: ./server/node/bot
+      context: ./services/nginx
+    # depends_on:
+    #   - client
+    ports:
+      - '80:80'
+      
+  # openfinconfig:
+  #   image: ${DOCKER_USER}/openfinconfig:${BUILD_VERSION}
+  #   hostname: openfinconfig
+  #   build:
+  #     dockerfile: OpenfinConfig.Dockerfile
+  #     context: ./server/node
+
+  # bot:
+  #   hostname: bot
+  #   image: ${DOCKER_USER}/bot:${BUILD_VERSION}
+  #   build:
+  #     context: ./server/node/bot
+
+  # e2ebase:
+  #   image: ${DOCKER_USER}/e2ebase:${BUILD_VERSION}
+  #   build:
+  #     dockerfile: Dockerfile
+  #     context: ./e2e

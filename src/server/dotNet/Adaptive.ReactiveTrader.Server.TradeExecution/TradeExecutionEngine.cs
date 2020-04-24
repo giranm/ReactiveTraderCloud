@@ -5,6 +5,7 @@ using Adaptive.ReactiveTrader.Contract;
 using Adaptive.ReactiveTrader.EventStore.Domain;
 using Adaptive.ReactiveTrader.Server.TradeExecution.Domain;
 using Serilog;
+using RestSharp;
 
 namespace Adaptive.ReactiveTrader.Server.TradeExecution
 {
@@ -91,6 +92,16 @@ namespace Adaptive.ReactiveTrader.Server.TradeExecution
             if (trade.CurrencyPair == "GBPJPY")
             {
                 trade.Reject("Execution engine rejected trade");
+
+                // Setup RESTful client for PD API.
+                // var client = new RestClient("https://events.pagerduty.com/v2/enqueue");
+                // client.Timeout = -1;
+                // var request = new RestRequest(Method.POST);
+                // request.AddHeader("Content-Type", "application/json");
+                // request.AddParameter("application/json", "{\n  \"payload\": {\n    \"summary\": \"Execution Engine Down - Critical\",\n    \"timestamp\": \"2020-04-23T08:42:58.315+0000\",\n    \"source\": \"TradeExecutionEngine\",\n    \"severity\": \"critical\",\n    \"component\": \"payment\",\n    \"group\": \"payment\",\n    \"class\": \"deploy\",\n    \"custom_details\": {\n      \"ping time\": \"1500ms\",\n      \"load avg\": 0.75\n    }\n  },\n  \"routing_key\": \"9018b1dbc0c94794b7546ea222ac6b40\",\n  \"dedup_key\": \"\",\n  \"images\": [\n    {\n      \"src\": \"https://www.pagerduty.com/wp-content/uploads/2016/05/pagerduty-logo-green.png\",\n      \"href\": \"https://example.com/\",\n      \"alt\": \"Example text\"\n    }\n  ],\n  \"links\": [\n    {\n      \"href\": \"https://example.com/\",\n      \"text\": \"Link text\"\n    }\n  ],\n  \"event_action\": \"trigger\",\n  \"client\": \"Sample Monitoring Service\",\n  \"client_url\": \"https://monitoring.example.com\"\n}",  ParameterType.RequestBody);
+                // IRestResponse response = client.Execute(request);
+                // Console.WriteLine(response.Content);
+                // System.Environment.Exit(0);
             }
             else
             {

@@ -1,0 +1,24 @@
+# Crossbar (Python virtualenv)
+pyenv activate crossbar
+pip install crossbar
+crossbar start --cbdir src/services/broker/.crossbar
+
+# React Server
+% pwd
+/Users/giran/dev/docker/ReactiveTraderCloud/src/client
+
+npm install
+npm run start:local-backend
+
+# Dot Net Development
+% pwd   
+/Users/giran/dev/docker/ReactiveTraderCloud/src/server/dotNet
+
+mkdir app
+cp -r ./configs/ ./app
+dotnet publish --configuration=Release --runtime=osx.10.11-x64 --output=app
+
+cd app/
+nohup dotnet ./Adaptive.ReactiveTrader.Server.Pricing.dll config.dev.json &
+nohup dotnet ./Adaptive.ReactiveTrader.Server.TradeExecution.dll config.dev.json &
+nohup dotnet ./Adaptive.ReactiveTrader.Server.ReferenceDataRead.dll config.dev.json &

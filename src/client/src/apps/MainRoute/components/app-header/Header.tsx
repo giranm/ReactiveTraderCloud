@@ -20,7 +20,7 @@ const Header: React.FC = ({ children }) => {
     <Root>
       <Logo size={1.75} onClick={onLogoClick} data-qa="header__root-logo" />
       <Fill>
-        <TitleContainer>Reactive Trader</TitleContainer>
+        <TitleContainer>TraderDuty</TitleContainer>
       </Fill>
       <LoginControls />
       <ThemeSwitcher />

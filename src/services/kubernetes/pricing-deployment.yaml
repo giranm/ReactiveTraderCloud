@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: pricing
-          image: reactivetradercloud/servers:${BUILD_VERSION}
+          image: reactivetradercloud/servers:v1.3.2-453-g07902e79
           env:
             - name: BROKER_HOST
               value: broker
@@ -25,8 +25,9 @@ spec:
             - name: EVENTSTORE_PORT
               value: '1113'
           command:
-            [
-              'sh',
-              '-c',
-              'dotnet ./Adaptive.ReactiveTrader.Server.Pricing.dll config.prod.json',
-            ]
+            ['sh', '-c', 'tail -f /dev/null']
+            # [
+            #   'sh',
+            #   '-c',
+            #   'dotnet ./Adaptive.ReactiveTrader.Server.Pricing.dll config.prod.json',
+            # ]

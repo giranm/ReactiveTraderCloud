@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: analytics
-          image: reactivetradercloud/servers:${BUILD_VERSION}
+          image: reactivetradercloud/servers:v1.3.2-453-g07902e79
           env:
             - name: BROKER_HOST
               value: broker

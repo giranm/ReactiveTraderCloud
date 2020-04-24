@@ -18,6 +18,6 @@ spec:
             secretName: nlp-key
       containers:
         - name: openfinconfig
-          image: reactivetradercloud/openfinconfig:${BUILD_VERSION}
+          image: reactivetradercloud/openfinconfig:v1.3.2-453-g07902e79
           ports:
             - containerPort: 8080
