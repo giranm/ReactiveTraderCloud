@@ -2,7 +2,7 @@
 
 [![image](https://raw.githubusercontent.com/AdaptiveConsulting/ReactiveTrader/master/images/adaptive-logo.png)](http://weareadaptive.com/)
 
-# Reactive Trader
+# Duty Trader
 
 Reactive Trader is a real-time FX trading platform designed to showcase reactive programming principles across the full application stack.
 
