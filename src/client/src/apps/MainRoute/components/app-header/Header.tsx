@@ -59,9 +59,8 @@ const Fill = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  text-transform: uppercase;
   font-weight: normal;
-  opacity: 0.58;
+  // opacity: 0.58;
   font-size: 0.625rem;
   /**
     TODO 8/22 extract this extension of header, and the fill outside header layout
@@ -74,12 +73,13 @@ const TitleContainer = styled.div`
   position: absolute;
   top: 20px;
   margin: 0 auto;
-  left: 0;
+  left: 60px;
   right: 0;
-  text-align: center;
+  // text-align: center;
   width: 100%;
-  font-size: 0.625rem;
+  font-size: 1.625rem;
   font-weight: normal;
+  color: #06ac38;
 `
 
 export default Header

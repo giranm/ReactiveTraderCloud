@@ -104,7 +104,7 @@ const envFormatted = prodEnvs.includes(env) ? '' : `(${env.toUpperCase()})`
 
 const baseAppConfigs: ApplicationConfig[] = [
   {
-    name: `Reactive Trader Cloud ${envFormatted}`,
+    name: `TraderDuty ${envFormatted}`,
     displayName: 'RT',
     tooltipName: 'Launch Reactive Trader',
     uuid: `reactive-trader-cloud-web-${env}`,

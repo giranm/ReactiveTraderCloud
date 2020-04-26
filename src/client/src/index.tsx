@@ -36,7 +36,7 @@ const envTitles = {
 
 const appTitles = {
   [APP_PATHS.LAUNCHER]: 'Reactive Ecosystem Launcher',
-  [APP_PATHS.TRADER]: 'Reactive Trader Cloud',
+  [APP_PATHS.TRADER]: 'TraderDuty',
   [APP_PATHS.STYLEGUIDE]: 'Style Guide for Reactive Trader',
 }
 
