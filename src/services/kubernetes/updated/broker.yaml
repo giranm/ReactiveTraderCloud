@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: broker-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: broker
+  template:
+    metadata:
+      labels:
+        component: broker
+    spec:
+      containers:
+        - name: broker
+          image: giran/broker:1.0.0
+          ports:
+            - containerPort: 8000
+
+---
+  
+apiVersion: v1
+kind: Service
+metadata:
+  name: broker
+spec:
+  type: ClusterIP
+  selector:
+    component: broker
+  ports:
+    - port: 8000
+      targetPort: 8000
