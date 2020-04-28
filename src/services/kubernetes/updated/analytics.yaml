@@ -1,7 +1,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: analytics-deployment
+  name: analytics
+  namespace: traderduty
 spec:
   replicas: 1
   selector:
@@ -30,3 +31,22 @@ spec:
               '-c',
               'dotnet ./Adaptive.ReactiveTrader.Server.Analytics.dll config.prod.json',
             ]
+      initContainers:
+        - name: init-broker
+          image: busybox
+          command: ['sh', '-c', 'until nslookup broker; do echo waiting for broker; sleep 2; done;']
+        - name: init-eventstore
+          image: busybox
+          command: ['sh', '-c', 'until nslookup eventstore; do echo waiting for eventstore; sleep 2; done;']
+        - name: init-eventstore-seed
+          image: giran/servers:1.0.0
+          env:
+            - name: BROKER_HOST
+              value: broker
+            - name: BROKER_PORT
+              value: '8000'
+            - name: EVENTSTORE_HOST
+              value: eventstore
+            - name: EVENTSTORE_PORT
+              value: '1113'
+          command: ['sh', '-c', 'dotnet ./Adaptive.ReactiveTrader.Server.Launcher.dll config.prod.json --populate-eventstore']

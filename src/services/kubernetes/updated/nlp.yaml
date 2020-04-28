@@ -1,7 +1,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nlp-deployment
+  name: nlp
+  namespace: traderduty
 spec:
   replicas: 1
   selector:
@@ -29,3 +30,10 @@ spec:
               value: '8000'
             # - name: GOOGLE_APPLICATION_CREDENTIALS
             #   value: /var/secrets/google/key.json
+      initContainers:
+        - name: init-broker
+          image: busybox
+          command: ['sh', '-c', 'until nslookup broker; do echo waiting for broker; sleep 2; done;']
+        - name: init-eventstore
+          image: busybox
+          command: ['sh', '-c', 'until nslookup eventstore; do echo waiting for eventstore; sleep 2; done;']

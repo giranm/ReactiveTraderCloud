@@ -1,7 +1,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: web-deployment
+  name: web
+  namespace: traderduty
 spec:
   replicas: 1
   selector:
@@ -17,6 +18,10 @@ spec:
           image: giran/nginx:1.0.0
           ports:
             - containerPort: 3000
+      initContainers:
+        - name: init-client
+          image: busybox
+          command: ['sh', '-c', 'until nslookup client; do echo waiting for client; sleep 2; done;']
 
 ---
 
@@ -24,6 +29,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: web
+  namespace: traderduty
   labels:
     name: web
     public: 'true'

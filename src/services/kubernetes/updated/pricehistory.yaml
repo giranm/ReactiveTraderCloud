@@ -1,7 +1,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: pricehistory-deployment
+  name: pricehistory
+  namespace: traderduty
 spec:
   replicas: 1
   selector:
@@ -20,3 +21,10 @@ spec:
               value: broker
             - name: BROKER_PORT
               value: '8000'
+      initContainers:
+        - name: init-broker
+          image: busybox
+          command: ['sh', '-c', 'until nslookup broker; do echo waiting for broker; sleep 2; done;']
+        - name: init-eventstore
+          image: busybox
+          command: ['sh', '-c', 'until nslookup eventstore; do echo waiting for eventstore; sleep 2; done;']

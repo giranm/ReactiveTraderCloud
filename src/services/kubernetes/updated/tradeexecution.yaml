@@ -1,7 +1,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: tradeexecution-deployment
+  name: tradeexecution
+  namespace: traderduty
 spec:
   replicas: 1
   selector:
@@ -30,3 +31,10 @@ spec:
               '-c',
               'dotnet ./Adaptive.ReactiveTrader.Server.TradeExecution.dll config.prod.json',
             ]
+      initContainers:
+        - name: init-broker
+          image: busybox
+          command: ['sh', '-c', 'until nslookup broker; do echo waiting for broker; sleep 2; done;']
+        - name: init-eventstore
+          image: busybox
+          command: ['sh', '-c', 'until nslookup eventstore; do echo waiting for eventstore; sleep 2; done;']
