@@ -70,7 +70,7 @@ services:
 
   tradeexecution:
     container_name: tradeexecution
-    image: ${DOCKER_USER}/tradeexecution:${BUILD_VERSION}
+    image: ${DOCKER_USER}/tradeexecution:${BUILD_VERSION}-broken
     build:
       dockerfile: Dockerfile
       context: ./server/dotNet

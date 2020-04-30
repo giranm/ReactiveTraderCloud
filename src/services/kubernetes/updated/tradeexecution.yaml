@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: tradeexecution
-          image: giran/servers:1.0.0
+          image: giran/tradeexecution:1.0.0-broken
           env:
             - name: BROKER_HOST
               value: broker
@@ -29,7 +29,7 @@ spec:
             [
               'sh',
               '-c',
-              'dotnet ./Adaptive.ReactiveTrader.Server.TradeExecution.dll config.prod.json',
+              'dotnet ./Adaptive.ReactiveTrader.Server.TradeExecution.dll config.prod.json && tail -f /dev/null',
             ]
       initContainers:
         - name: init-broker
