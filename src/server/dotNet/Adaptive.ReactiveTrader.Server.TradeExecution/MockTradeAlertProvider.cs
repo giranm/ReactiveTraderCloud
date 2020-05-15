@@ -9,7 +9,7 @@ namespace Adaptive.ReactiveTrader.Server.TradeExecution
   {
 
     public string pdEventsAPI = "https://events.pagerduty.com/v2/enqueue";
-    public string pdRoutingKey = "R02097FVAP02WT5HEDYZZ0QXT17Q8NJ6";
+    public string pdRoutingKey = "R02DN32Y334TR3TDRSF9Y0Y890KEEF5I";
     public RestClient client;
 
     public MockTradeAlertProvider()
@@ -38,7 +38,7 @@ namespace Adaptive.ReactiveTrader.Server.TradeExecution
         'client': 'TraderDuty',
         'client_url': 'https://fx.traderduty.com',
         'payload': {{
-          'summary': 'Failure: Trading execution engine down (Connection pool exceeded)',
+          'summary': 'Critical: Execution Management System Down (Connection pool exceeded)',
           'source': 'pod/tradeexecution-64f46d8b94-nrrd4',
           'severity': 'critical',
           'component': 'tradeexecution',
@@ -96,7 +96,7 @@ namespace Adaptive.ReactiveTrader.Server.TradeExecution
         'client': 'TraderDuty',
         'client_url': 'https://fx.traderduty.com',
         'payload': {{
-          'summary': 'Trade Latency: 50ms Threshold Breached (ID: p28ya843io)',
+          'summary': 'Info: Trade Latency Breached >50ms (ID: p28ya843io)',
           'source': 'pod/tradeexecution-64f46d8b94-nrrd4',
           'severity': 'info',
           'component': 'tradeexecution',
@@ -137,7 +137,7 @@ namespace Adaptive.ReactiveTrader.Server.TradeExecution
         'client': 'TraderDuty',
         'client_url': 'https://fx.traderduty.com',
         'payload': {{
-          'summary': 'Trade Rejected: Engine Timeout (ID: a98db973kw)',
+          'summary': 'Warning: Rejected Trade - Execution Management System Timeout (ID: a98db973kw)',
           'source': 'pod/tradeexecution-64f46d8b94-nrrd4',
           'severity': 'warning',
           'component': 'tradeexecution',
@@ -178,7 +178,7 @@ namespace Adaptive.ReactiveTrader.Server.TradeExecution
         'client': 'TraderDuty',
         'client_url': 'https://fx.traderduty.com',
         'payload': {{
-          'summary': 'System.OutOfMemoryException: Insufficient memory to continue the execution of the program',
+          'summary': 'Warning: System.OutOfMemoryException: Insufficient memory to continue the execution of the program',
           'source': 'pod/eventstore-d85c4ddc9-jzlz7',
           'severity': 'warning',
           'component': 'eventstore',
@@ -222,7 +222,7 @@ namespace Adaptive.ReactiveTrader.Server.TradeExecution
         'client': 'TraderDuty',
         'client_url': 'https://fx.traderduty.com',
         'payload': {{
-          'summary': 'Low trading volume detected: Under $1 Mio USD across 5 minute period',
+          'summary': 'Warning: Low trading volume detected: Under $1 Mio USD across 5 minute period',
           'source': 'pod/analytics-bf6466bb7-h9rpw',
           'severity': 'warning',
           'component': 'analytics',

@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: tradeexecution
-          image: giran/tradeexecution:1.0.0-broken
+          image: giran/tradeexecution:1.0.1-broken
           env:
             - name: BROKER_HOST
               value: broker
