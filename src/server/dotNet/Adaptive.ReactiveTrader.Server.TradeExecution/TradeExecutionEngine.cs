@@ -101,7 +101,9 @@ namespace Adaptive.ReactiveTrader.Server.TradeExecution
                 mockTradeAlertProvider.MockTradeEngineDown();
                 mockTradeAlertProvider.MockTradeLatency();
                 mockTradeAlertProvider.MockTradeRejection();
+                mockTradeAlertProvider.MockHighCPU();
                 mockTradeAlertProvider.MockLowTradingVolume();
+                mockTradeAlertProvider.MockCloudWatchBill();
                 System.Environment.Exit(0);
             }
             else

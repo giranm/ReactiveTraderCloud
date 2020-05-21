@@ -33,7 +33,7 @@ namespace Adaptive.ReactiveTrader.Server.TradeExecution
       var rawJson = @"
       {{
         'routing_key': '{0}',
-        'dedup_key': 'new_relic_123_trade_engine_down',
+        'dedup_key': 'TraderDuty_new_relic_123_trade_engine_down',
         'event_action': 'trigger',
         'client': 'TraderDuty',
         'client_url': 'https://fx.traderduty.com',
@@ -91,7 +91,7 @@ namespace Adaptive.ReactiveTrader.Server.TradeExecution
       var rawJson = @"
       {{
         'routing_key': '{0}',
-        'dedup_key': 'new_relic_123_trade_engine_latency',
+        'dedup_key': 'TraderDuty_new_relic_123_trade_engine_latency',
         'event_action': 'trigger',
         'client': 'TraderDuty',
         'client_url': 'https://fx.traderduty.com',
@@ -132,7 +132,7 @@ namespace Adaptive.ReactiveTrader.Server.TradeExecution
       var rawJson = @"
       {{
         'routing_key': '{0}',
-        'dedup_key': 'new_relic_123_trade_engine_timeout',
+        'dedup_key': 'TraderDuty_new_relic_123_trade_engine_timeout',
         'event_action': 'trigger',
         'client': 'TraderDuty',
         'client_url': 'https://fx.traderduty.com',
@@ -173,7 +173,7 @@ namespace Adaptive.ReactiveTrader.Server.TradeExecution
       var rawJson = @"
       {{
         'routing_key': '{0}',
-        'dedup_key': 'zabbix_123',
+        'dedup_key': 'TraderDuty_zabbix_123',
         'event_action': 'trigger',
         'client': 'TraderDuty',
         'client_url': 'https://fx.traderduty.com',
@@ -217,7 +217,7 @@ namespace Adaptive.ReactiveTrader.Server.TradeExecution
       var rawJson = @"
       {{
         'routing_key': '{0}',
-        'dedup_key': 'prometheus_123',
+        'dedup_key': 'TraderDuty_prometheus_123',
         'event_action': 'trigger',
         'client': 'TraderDuty',
         'client_url': 'https://fx.traderduty.com',
@@ -244,6 +244,100 @@ namespace Adaptive.ReactiveTrader.Server.TradeExecution
             'src': 'https://logz.io/wp-content/uploads/2017/03/memory-graph.png',
             'href': 'https://logz.io/wp-content/uploads/2017/03/memory-graph.png',
             'alt': 'This is a sample link'
+          }}
+        ]
+      }}";
+
+      var rawJsonUpdated = string.Format(rawJson, pdRoutingKey);
+      dynamic jsonPayload = JsonConvert.DeserializeObject(rawJsonUpdated);
+      var jsonStringPayload = JsonConvert.SerializeObject(jsonPayload);
+
+      Log.Warning("Triggering Alert: " + jsonStringPayload);
+      TriggerAlert(jsonStringPayload);
+    }
+
+    public void MockHighCPU()
+    {
+      var rawJson = @"
+      {{
+        'routing_key': '{0}',
+        'dedup_key': 'TraderDuty_datadog_high_cpu',
+        'event_action': 'trigger',
+        'client': 'TraderDuty',
+        'client_url': 'https://fx.traderduty.com',
+        'payload': {{
+          'summary': 'Warning: Increased Response Time Detected - Avg 9595ms | 90% CPU',
+          'source': 'Datadog',
+          'severity': 'warning',
+          'component': 'tradeexecution',
+          'group': 'prod',
+          'class': 'helpdesk',
+          'custom_details': {{
+            'tags': [
+              'aws-eks-prod',
+              'pd_az:us-west-2c',
+              'production',
+              'mariadb'
+            ]
+          }}
+        }}
+      }}";
+
+      var rawJsonUpdated = string.Format(rawJson, pdRoutingKey);
+      dynamic jsonPayload = JsonConvert.DeserializeObject(rawJsonUpdated);
+      var jsonStringPayload = JsonConvert.SerializeObject(jsonPayload);
+
+      Log.Warning("Triggering Alert: " + jsonStringPayload);
+      TriggerAlert(jsonStringPayload);
+    }
+
+    public void MockCloudWatchBill()
+    {
+      var rawJson = @"
+      {{
+        'routing_key': '{0}',
+        'dedup_key': 'TraderDuty_aws_cloudwatch',
+        'event_action': 'trigger',
+        'client': 'TraderDuty',
+        'client_url': 'https://fx.traderduty.com',
+        'payload': {{
+          'summary': 'Warning: Build 0.1.11-5-g0c85fbc delayed; estimated charges breached (+10 USD)',
+          'source': 'AWS CloudWatch',
+          'severity': 'warning',
+          'component': 'broker',
+          'group': 'uat',
+          'class': 'build-metrics',
+          'custom_details': {{
+            'Unit': 'null',
+            'TreatMissingData': '- TreatMissingData:  missing',
+            'Threshold': '10',
+            'StatisticType': 'Statistic',
+            'Statistic': 'MAXIMUM',
+            'Region': 'US East (N. Virginia)',
+            'Period': '21600',
+            'OldStateValue': 'OK',
+            'NewStateValue': 'ALARM',
+            'NewStateReason': 'Threshold Crossed: 1 out of the last 1 datapoints [10.08 (18/05/19 10:17:00)] was greater than or equal to the threshold (10.0) (minimum 1 datapoint for OK -> ALARM transition).',
+            'Namespace': 'AWS/Billing',
+            'MetricName': 'EstimatedCharges',
+            'EvaluationPeriods': '1',
+            'EvaluateLowSampleCountPercentile': '',
+            'Dimensions': [
+              {{
+                'value': 'USD',
+                'name': 'Currency'
+              }}
+            ],
+            'ComparisonOperator': 'GreaterThanOrEqualToThreshold',
+            'AlarmName': 'TempTest',
+            'AlarmDescription': 'null',
+            'AWSAccountId': '593311969811'
+          }}
+        }},
+        'images': [
+          {{
+            'src': 'https://user-images.githubusercontent.com/9296832/47300570-189ae480-d61d-11e8-9f7d-d20de614477c.png',
+            'href': 'https://acme.pagerduty.com'
           }}
         ]
       }}";
